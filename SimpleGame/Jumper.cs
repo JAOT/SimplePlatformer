@@ -25,11 +25,26 @@ namespace SimpleGame
             SimulateFriction();
             MoveAsFarAsPossible(gameTime);
             StopMovingIfBlocked();
+            CancelDownwardMovementIfGrounded();
+
+        }
+
+        private void CheckKeyboardAndUpdateMovement()
+        {
+            KeyboardState keyboardState = Keyboard.GetState();
+            if (keyboardState.IsKeyDown(Keys.Left)) { Movement += new Vector2(-1, 0); }
+            if (keyboardState.IsKeyDown(Keys.Right)) { Movement += new Vector2(1, 0); }
+            if (keyboardState.IsKeyDown(Keys.Up)&&IsOnFirmGround()) { Movement = new Vector2(Movement.X, -1* 25); }
         }
 
         private void AffectWithGravity()
         {
-            Movement += Vector2.UnitY * 0.5f;
+            Movement += Vector2.UnitY * 1.5f;
+        }
+
+        private void SimulateFriction()
+        {
+            Movement -= Movement * new Vector2(.1f, .1f);
         }
 
         private void MoveAsFarAsPossible(GameTime gameTime)
@@ -44,19 +59,6 @@ namespace SimpleGame
         private void UpdatePositionBasedOnMovement()
         {
             Position += Movement;
-        }
-
-        private void CheckKeyboardAndUpdateMovement()
-        {
-            KeyboardState keyboardState = Keyboard.GetState();
-            if (keyboardState.IsKeyDown(Keys.Left)) { Movement += new Vector2(-1, 0); }
-            if (keyboardState.IsKeyDown(Keys.Right)) { Movement += new Vector2(1, 0); }
-            if (keyboardState.IsKeyDown(Keys.Up)&&IsOnFirmGround()) { Movement = -Vector2.UnitY * 25; }
-        }
-
-        private void SimulateFriction()
-        {
-            Movement -= Movement * new Vector2(.1f, .1f);
         }
 
         public bool IsOnFirmGround()
@@ -77,6 +79,12 @@ namespace SimpleGame
             {
                 Movement *= Vector2.UnitX;
             }
+        }
+
+        private void CancelDownwardMovementIfGrounded()
+        {
+            if (IsOnFirmGround())
+            { Movement = new Vector2(Movement.X, 0); }
         }
     }
 }

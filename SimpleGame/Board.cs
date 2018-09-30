@@ -29,6 +29,13 @@ namespace SimpleGame
             CurrentBoard = this;
         }
 
+        internal void CreateNewBoard()
+        {
+            InitializeAllTilesAndBlockSomeRandomly();
+            SetAllBorderTilesBlocked();
+            SetTopLeftTileUnblocked();
+        }
+
         private void InitializeAllTilesAndBlockSomeRandomly()
         {
             Random Random = new Random();
@@ -39,7 +46,7 @@ namespace SimpleGame
                     Vector2 tilePosition =
                         new Vector2(x * TileTexture.Width, y * TileTexture.Height);
                     Tiles[x, y] =
-                        new Tile(TileTexture, tilePosition, Random.Next(5) == 0, SpriteBatch);
+                        new Tile(TileTexture, tilePosition, Random.Next(5)==0, SpriteBatch);
                 }
             }
         }
@@ -88,13 +95,6 @@ namespace SimpleGame
                 }
             }
             return true;
-        }
-
-        internal void CreateNewBoard()
-        {
-            InitializeAllTilesAndBlockSomeRandomly();
-            SetAllBorderTilesBlocked();
-            SetTopLeftTileUnblocked();
         }
 
         public Vector2 WhereCanIGetTo(Vector2 originalPosition, Vector2 destination, Rectangle boundingRectangle)
